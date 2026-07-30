@@ -13,11 +13,592 @@ from openedx.core.lib.courses import course_image_url
 %>
 
 <%inherit file="../main.html" />
+
 <%block name="headextra">
-  ## OG (Open Graph) title and description added below to give social media info to display
-  ## (https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content#tags)
   <meta property="og:title" content="${course.display_name_with_default}" />
   <meta property="og:description" content="${get_course_about_section(request, course, 'short_description')}" />
+
+  <style>
+    /* Theme */
+    :root {
+      --kku-green-950: #022c22;
+      --kku-green-900: #064e3b;
+      --kku-green-700: #047857;
+      --kku-green-100: #d1fae5;
+      --kku-green-50: #ecfdf5;
+      --kku-text: #0f172a;
+      --kku-muted: #64748b;
+      --kku-border: #d8e7df;
+    }
+
+    /* Reset */
+    html,
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background:
+        radial-gradient(circle at top left, rgba(16,185,129,.13), transparent 34rem),
+        linear-gradient(135deg, #f1f7f4 0%, #ecfdf5 45%, #eef7f2 100%) !important;
+    }
+
+    #page-prompt,
+    .global-header,
+    header.global-header,
+    .marketing-hero,
+    .wrapper-header,
+    .wrapper-footer,
+    footer.wrapper-footer,
+    .nav-skip,
+    .jump-nav {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+      visibility: hidden !important;
+    }
+
+    .window-wrap,
+    .content-wrapper,
+    .content-wrapper.main-container,
+    #content.content-wrapper.main-container,
+    .wrapper-content {
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: none !important;
+      width: 100% !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* Header */
+    .kku-header {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      margin: 0 !important;
+      background:
+        radial-gradient(circle at 8% 20%, rgba(16,185,129,.18), transparent 18rem),
+        linear-gradient(135deg, #022c22 0%, #064e3b 52%, #022c22 100%);
+      box-shadow: 0 18px 45px rgba(2,44,34,.24);
+    }
+
+    .kku-header__logo {
+      height: 62px;
+      width: auto;
+      max-width: 230px;
+      object-fit: contain;
+      margin-right: 2rem;
+    }
+
+    .kku-header__nav {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      flex: 1;
+    }
+
+    .kku-header__nav a {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.15rem;
+      color: rgba(255,255,255,.9) !important;
+      font-weight: 800;
+      text-decoration: none !important;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .kku-header__nav a:hover,
+    .kku-header__nav a.is-active {
+      color: #fff !important;
+      background: rgba(16,185,129,.16);
+      border-bottom-color: #10b981;
+    }
+
+    /* Page */
+    #main.course-info.about.container {
+      width: min(1320px, calc(100% - 48px)) !important;
+      max-width: none !important;
+      margin: 42px auto 72px !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    /* Hero */
+    .course-profile {
+      margin: 0 0 30px !important;
+      padding: 56px !important;
+      border-radius: 30px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background:
+        radial-gradient(circle at 92% 18%, rgba(209,250,229,.16), transparent 22rem),
+        radial-gradient(circle at 10% 10%, rgba(16,185,129,.22), transparent 22rem),
+        linear-gradient(135deg, #022c22 0%, #064e3b 52%, #047857 100%) !important;
+      color: #fff !important;
+      box-shadow: 0 28px 70px rgba(2,44,34,.22) !important;
+    }
+
+    .course-profile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,.08), transparent 38%);
+      pointer-events: none;
+    }
+
+    .intro-inner-wrapper {
+      position: relative !important;
+      z-index: 1 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    .profile-top {
+      display: grid !important;
+      grid-template-columns: 420px minmax(0, 1fr) !important;
+      gap: 56px !important;
+      align-items: center !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .course-profile .media,
+    .course-profile .hero {
+      width: 100% !important;
+      height: 280px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-radius: 26px !important;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(209,250,229,.28), transparent 13rem),
+        rgba(255,255,255,.14) !important;
+      border: 1px solid rgba(255,255,255,.22) !important;
+      box-shadow: 0 24px 60px rgba(2,44,34,.22) !important;
+      overflow: hidden !important;
+      display: block !important;
+    }
+
+    .course-profile .hero img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      padding: 44px !important;
+      box-sizing: border-box !important;
+      display: block !important;
+    }
+
+    .info-profile {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: 680px !important;
+      position: static !important;
+      transform: none !important;
+    }
+
+    .info-profile h1 {
+      margin: 0 0 18px !important;
+      color: #fff !important;
+      font-size: clamp(48px, 5vw, 76px) !important;
+      font-weight: 950 !important;
+      line-height: .95 !important;
+      letter-spacing: -0.055em !important;
+      text-shadow: 0 4px 18px rgba(0,0,0,.25) !important;
+    }
+
+    .info-profile .org {
+      display: inline-flex !important;
+      padding: 9px 16px !important;
+      border-radius: 999px !important;
+      background: rgba(209,250,229,.16) !important;
+      border: 1px solid rgba(209,250,229,.24) !important;
+      color: #d1fae5 !important;
+      font-size: 14px !important;
+      font-weight: 900 !important;
+    }
+
+    .main-cta {
+      margin-top: 36px !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      align-items: center !important;
+      gap: 16px !important;
+      flex-wrap: wrap !important;
+      position: static !important;
+    }
+
+    .main-cta a,
+    .main-cta .register,
+    .main-cta strong {
+      min-height: 52px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 28px !important;
+      border-radius: 16px !important;
+      background: #fff !important;
+      color: var(--kku-green-950) !important;
+      font-weight: 900 !important;
+      text-decoration: none !important;
+      border: 0 !important;
+      box-shadow: 0 18px 40px rgba(2,44,34,.18) !important;
+      opacity: 1 !important;
+    }
+
+    #register_error {
+      color: #fee2e2 !important;
+      font-weight: 800 !important;
+    }
+
+    /* Content */
+    .about-content {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) 360px !important;
+      gap: 28px !important;
+      align-items: start !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    .details,
+    .course-summary,
+    .additional-resources,
+    .about-sidebar-html {
+      background: #fff !important;
+      border: 1px solid var(--kku-border) !important;
+      border-radius: 24px !important;
+      box-shadow: 0 18px 45px rgba(2,44,34,.08) !important;
+      box-sizing: border-box !important;
+    }
+
+    .details {
+      width: 100% !important;
+      padding: 30px !important;
+    }
+
+    .inner-wrapper {
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: none !important;
+      color: var(--kku-text) !important;
+      font-size: 16px !important;
+      line-height: 1.8 !important;
+    }
+
+    .inner-wrapper section,
+    .inner-wrapper article,
+    .inner-wrapper div {
+      max-width: none !important;
+    }
+
+    .inner-wrapper h1,
+    .inner-wrapper h2,
+    .inner-wrapper h3 {
+      color: var(--kku-green-950) !important;
+      font-weight: 900 !important;
+    }
+
+    .course-sidebar {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      box-sizing: border-box !important;
+    }
+
+    .course-summary {
+      width: 100% !important;
+      padding: 26px !important;
+    }
+
+    .course-summary h2 {
+      margin: 0 0 26px !important;
+      color: var(--kku-green-950) !important;
+      font-size: 26px !important;
+      font-weight: 900 !important;
+      line-height: 1.1 !important;
+    }
+
+    /* Summary rows */
+    .important-dates {
+      margin: 0 !important;
+      padding: 0 !important;
+      list-style: none !important;
+      width: 100% !important;
+    }
+
+    .important-dates-item {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 18px !important;
+      width: 100% !important;
+      padding: 18px 0 !important;
+      border-bottom: 1px solid #e5e7eb !important;
+      box-sizing: border-box !important;
+    }
+
+    .important-dates-item:last-child {
+      border-bottom: 0 !important;
+    }
+
+    .important-dates-item-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+    }
+
+    .important-dates-item .icon,
+    .important-dates-item svg {
+      flex: 0 0 26px !important;
+      width: 26px !important;
+      height: 26px !important;
+      line-height: 26px !important;
+      margin: 0 !important;
+      color: var(--kku-green-700) !important;
+      font-size: 20px !important;
+      text-align: center !important;
+    }
+
+    .important-dates-item-title {
+      margin: 0 !important;
+      color: var(--kku-muted) !important;
+      font-size: 16px !important;
+      font-weight: 900 !important;
+      line-height: 1.3 !important;
+    }
+
+    .important-dates-item-text {
+      display: block !important;
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      color: var(--kku-text) !important;
+      font-size: 16px !important;
+      font-weight: 900 !important;
+      line-height: 1.3 !important;
+      white-space: nowrap !important;
+      text-align: right !important;
+    }
+
+    .important-dates-item .tip {
+      margin: 8px 0 0 !important;
+      color: var(--kku-muted) !important;
+      font-size: 13px !important;
+      line-height: 1.5 !important;
+    }
+
+    .additional-resources,
+    .about-sidebar-html {
+      width: 100% !important;
+      padding: 24px !important;
+    }
+
+    /* Share */
+    .kku-share-card {
+      margin-top: 24px !important;
+      padding-top: 24px !important;
+      border-top: 1px solid #e5e7eb !important;
+    }
+
+    .kku-share-card__title {
+      margin: 0 0 18px !important;
+      color: var(--kku-muted) !important;
+      font-size: 16px !important;
+      font-weight: 900 !important;
+    }
+
+    .kku-share-card__links {
+      display: flex !important;
+      gap: 14px !important;
+      align-items: center !important;
+    }
+
+    .kku-share-card__link {
+      width: 56px !important;
+      height: 56px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 16px !important;
+      background: var(--kku-green-50) !important;
+      color: var(--kku-green-700) !important;
+      border: 1px solid var(--kku-border) !important;
+      font-size: 20px !important;
+      font-weight: 900 !important;
+      text-decoration: none !important;
+    }
+
+    .kku-share-card__link:hover {
+      background: var(--kku-green-700) !important;
+      color: #fff !important;
+    }
+
+    /* Footer */
+    .kku-footer {
+      direction: rtl;
+      background: #f3f4f6;
+      color: #344054;
+      border-top: 1px solid #d0d5dd;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .kku-footer__bottom {
+      min-height: 168px;
+      padding: 40px 0;
+    }
+
+    .kku-footer__inner {
+      width: min(1800px, calc(100% - 48px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 48px;
+      direction: ltr;
+    }
+
+    .kku-footer__brands {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .kku-footer__brands img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .kku-footer__kkux-logo {
+      height: 42px !important;
+    }
+
+    .kku-footer__legal {
+      flex: 0 1 620px;
+      margin-left: auto;
+      text-align: right;
+      direction: rtl;
+    }
+
+    .kku-footer__legal-links {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .kku-footer__legal a {
+      color: inherit !important;
+      text-decoration: none !important;
+    }
+
+    .kku-footer__legal p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #344054;
+    }
+
+    .kku-footer__copyright {
+      font-weight: 700;
+      color: #111827 !important;
+    }
+
+    @media (max-width: 980px) {
+      .profile-top,
+      .about-content {
+        grid-template-columns: 1fr !important;
+      }
+
+      .main-cta {
+        justify-content: flex-start !important;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .kku-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 1rem 0;
+      }
+
+      .kku-header__logo {
+        margin: 0 0 8px;
+      }
+
+      .kku-header__nav {
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      .kku-header__nav a {
+        min-height: 52px;
+      }
+
+      #main.course-info.about.container,
+      .kku-footer__inner {
+        width: min(100% - 28px, 1320px) !important;
+      }
+
+      .course-profile {
+        padding: 28px !important;
+      }
+
+      .course-profile .media,
+      .course-profile .hero {
+        height: 220px !important;
+      }
+
+      .info-profile h1 {
+        font-size: 42px !important;
+      }
+
+      .important-dates-item {
+        align-items: flex-start !important;
+      }
+
+      .important-dates-item-left {
+        align-items: flex-start !important;
+      }
+
+      .kku-footer__inner {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+      }
+
+      .kku-footer__brands {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </%block>
 
 <%block name="js_extra">
@@ -37,7 +618,6 @@ from openedx.core.lib.courses import course_image_url
           location.href = xhr.responseText;
         }
       } else if (xhr.status == 403) {
-        // redirect unauthenticated user to the login page
         location.replace("${reverse('signin_user') | n, js_escaped_string}?next=" + encodeURIComponent("${request.path | n, js_escaped_string}"));
       } else {
         $('#register_error').text(
@@ -54,10 +634,22 @@ from openedx.core.lib.courses import course_image_url
 
 <%block name="pagetitle">${course.display_name_with_default}</%block>
 
-<section class="course-info about container" id="main">
+<header class="kku-header">
+  <img src="${static.url('images/kku/kkuwhitelogo.svg')}" alt="KKUx Academy" class="kku-header__logo" />
 
+  <nav class="kku-header__nav" aria-label="Main navigation">
+    <a href="${static.get_value('KKU_HOME_URL', 'http://localhost:5173')}">Home</a>
+<a href="${static.get_value('KKU_DASHBOARD_URL', 'http://apps.local.openedx.io/learner-dashboard/')}">Dashboard</a>
+<a href="${static.get_value('KKU_COURSES_URL', 'http://local.openedx.io:8000/courses')}" class="is-active">Courses</a>
+<a href="${static.get_value('KKU_PROGRAMS_URL', '/dashboard/programs/')}">Programs</a>
+<a href="${static.get_value('KKU_STORY_URL', 'http://localhost:5173/about')}">KKUx Story</a>
+<a href="${static.get_value('KKU_BUSINESS_URL', 'http://localhost:5173/business')}">KKUx Business</a>
+<a href="${static.get_value('KKU_CONTACT_URL', 'http://localhost:5173/contact')}">Contact</a>
+  </nav>
+</header>
+
+<section class="course-info about container" id="main">
   <%block name="course_about_header">
-  <!-- Course profile header is updated inclusive of course heading and course image. -->
   <header class="course-profile">
     <div class="intro-inner-wrapper">
       <div class="profile-top">
@@ -71,69 +663,59 @@ from openedx.core.lib.courses import course_image_url
         %else:
         <div class="media">
           <div class="hero">
-            <!-- NEW IN INDIGO: Add fallback image in case of no course-image using onerror -->
             <img src="${course_image_urls['large']}" onerror="this.src='/theming/asset/images/no_course_image.png';" alt="" aria-hidden="true" />
           </div>
         </div>
         % endif
-        <div class="info-profile">
-          <h1>
-            ${course.display_name_with_default}
-          </h1>
-          <span class="org">${course.display_org_with_default}</span>
-        </div>
-      </div>
-      <div class="main-cta">
-        %if user.is_authenticated and registered:
-        <span class="register disabled">${_("Already Enrolled")}</span>
-          %if show_courseware_link:
-            <a href="${course_target}">
-          %endif
-          %if show_courseware_link:
-            <strong>${_("View Course")}</strong>
-            </a>
-          %endif
 
-        % elif is_course_full:
-          <span class="register disabled">
-            ${_("Course is full")}
-          </span>
-        % elif invitation_only and not can_enroll:
-          <span class="register disabled">${_("Enrollment in this course is by invitation only")}</span>
-        ## Shib courses need the enrollment button to be displayed even when can_enroll is False,
-        ## because AnonymousUsers cause can_enroll for shib courses to be False, but we need them to be able to click
-        ## so that they can register and become a real user that can enroll.
-        % elif not is_shib_course and not can_enroll:
-        <span class="register closed disabled"><i class="fa fa-lock" aria-hidden="true"></i> ${_("Enrollment is Closed")}</span>
-        %elif allow_anonymous:
-          %if show_courseware_link:
-            <a href="${course_target}">
-            <strong>${_("View Course")}</strong>
-            </a>
-          %endif
-        %else:
-          <%
-            if ecommerce_checkout:
-              reg_href = ecommerce_checkout_link
-            else:
-              reg_href="#"
-            if single_paid_mode:
-              href_class = "add-to-cart"
-            else:
-              href_class = "register"
-          %>
-          <a href="${reg_href}" class="${href_class}">
-            ${_("Enroll Now")}
-          </a>
-          <div id="register_error"></div>
-        %endif
+        <div class="info-profile">
+          <h1>${course.display_name_with_default}</h1>
+          <span class="org">${course.display_org_with_default}</span>
+
+          <div class="main-cta">
+            %if user.is_authenticated and registered:
+              <span class="register disabled">${_("Already Enrolled")}</span>
+              %if show_courseware_link:
+                <a href="${course_target}">
+                  <strong>${_("View Course")}</strong>
+                </a>
+              %endif
+            % elif is_course_full:
+              <span class="register disabled">${_("Course is full")}</span>
+            % elif invitation_only and not can_enroll:
+              <span class="register disabled">${_("Enrollment in this course is by invitation only")}</span>
+            % elif not is_shib_course and not can_enroll:
+              <span class="register closed disabled"><i class="fa fa-lock" aria-hidden="true"></i> ${_("Enrollment is Closed")}</span>
+            %elif allow_anonymous:
+              %if show_courseware_link:
+                <a href="${course_target}">
+                  <strong>${_("View Course")}</strong>
+                </a>
+              %endif
+            %else:
+              <%
+                if ecommerce_checkout:
+                  reg_href = ecommerce_checkout_link
+                else:
+                  reg_href="#"
+                if single_paid_mode:
+                  href_class = "add-to-cart"
+                else:
+                  href_class = "register"
+              %>
+              <a href="${reg_href}" class="${href_class}">
+                ${_("Enroll Now")}
+              </a>
+              <div id="register_error"></div>
+            %endif
+          </div>
         </div>
       </div>
+    </div>
   </header>
   </%block>
 
   <div class="about-content">
-
     <%block name="course_about_details">
     <div class="details">
       % if staff_access and studio_url is not None:
@@ -148,129 +730,139 @@ from openedx.core.lib.courses import course_image_url
     </div>
     </%block>
 
-    <!-- NEW IN INDIGO sidebar is improved with better icons -->
-
     <div class="course-sidebar">
       <div class="course-summary">
         <h2>Course Summary</h2>
+
         <%block name="course_about_important_dates">
         <ol class="important-dates">
           <li class="important-dates-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.8201 8.99997L12.0001 12.72L5.18007 8.99997L12.0001 5.27997L18.8201 8.99997ZM12 18.72L17 15.99V12.27L12 15L7 12.27V15.99L12 18.72Z" fill="#9CA3AF"/>
-              </svg>
-            <p class="important-dates-item-title">${_("Course Number")}</p><span class="important-dates-item-text course-number">${course.display_number_with_default}</span></li>
+            <div class="important-dates-item-left">
+              <span class="icon fa fa-graduation-cap" aria-hidden="true"></span>
+              <p class="important-dates-item-title">${_("Course Number")}</p>
+            </div>
+            <span class="important-dates-item-text course-number">${course.display_number_with_default}</span>
+          </li>
+
           % if not course.start_date_is_still_default:
-              <%
-                  course_start_date = course.advertised_start or course.start
-              %>
+            <%
+              course_start_date = course.advertised_start or course.start
+            %>
             <li class="important-dates-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M18 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.89 22 3 21.1 3 20L3.01 6C3.01 4.9 3.89 4 5 4H6V2H8V4H16V2H18V4ZM5 10V20H19V10H5ZM19 8H5V6H19V8ZM17 13H12V18H17V13Z" fill="#9CA3AF"/>
-                </svg>
-              <p class="important-dates-item-title">${_("Classes Start")}</p>
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-calendar" aria-hidden="true"></span>
+                <p class="important-dates-item-title">${_("Classes Start")}</p>
+              </div>
               % if isinstance(course_start_date, str):
-                  <span class="important-dates-item-text start-date">${course_start_date}</span>
+                <span class="important-dates-item-text start-date">${course_start_date}</span>
               % else:
-                  <%
-                     course_date_string = course_start_date.strftime('%Y-%m-%dT%H:%M:%S%z')
-                  %>
-                  <span class="important-dates-item-text start-date localized_datetime" data-format="shortDate" data-datetime="${course_date_string}" data-language="${LANGUAGE_CODE}"></span>
+                <%
+                  course_date_string = course_start_date.strftime('%Y-%m-%dT%H:%M:%S%z')
+                %>
+                <span class="important-dates-item-text start-date localized_datetime" data-format="shortDate" data-datetime="${course_date_string}" data-language="${LANGUAGE_CODE}"></span>
               % endif
             </li>
           % endif
-            ## We plan to ditch end_date (which is not stored in course metadata),
-            ## but for backwards compatibility, show about/end_date blob if it exists.
-            % if course.end:
-                <%
-                    course_end_date = course.end
-                %>
 
+          % if course.end:
+            <%
+              course_end_date = course.end
+            %>
             <li class="important-dates-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M18 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.89 22 3 21.1 3 20L3.01 6C3.01 4.9 3.89 4 5 4H6V2H8V4H16V2H18V4ZM5 10V20H19V10H5ZM19 8H5V6H19V8ZM17 13H12V18H17V13Z" fill="#9CA3AF"/>
-                </svg>
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-calendar-check-o" aria-hidden="true"></span>
                 <p class="important-dates-item-title">${_("Classes End")}</p>
-                  % if isinstance(course_end_date, str):
-                      <span class="important-dates-item-text final-date">${course_end_date}</span>
-                  % else:
-                    <%
-                        course_date_string = course_end_date.strftime('%Y-%m-%dT%H:%M:%S%z')
-                    %>
-                    <span class="important-dates-item-text final-date localized_datetime" data-format="shortDate" data-datetime="${course_date_string}" data-language="${LANGUAGE_CODE}"></span>
-                  % endif
+              </div>
+              % if isinstance(course_end_date, str):
+                <span class="important-dates-item-text final-date">${course_end_date}</span>
+              % else:
+                <%
+                  course_date_string = course_end_date.strftime('%Y-%m-%dT%H:%M:%S%z')
+                %>
+                <span class="important-dates-item-text final-date localized_datetime" data-format="shortDate" data-datetime="${course_date_string}" data-language="${LANGUAGE_CODE}"></span>
+              % endif
             </li>
-            % endif
-
-          % if get_course_about_section(request, course, "effort"):
-            <li class="important-dates-item"><span class="icon fa fa-pencil" aria-hidden="true"></span><p class="important-dates-item-title">${_("Estimated Effort")}</p><span class="important-dates-item-text effort">${get_course_about_section(request, course, "effort")}</span></li>
           % endif
 
-          ##<li class="important-dates-item"><span class="icon fa fa-clock-o" aria-hidden="true"></span><p class="important-dates-item-title">${_('Course Length')}</p><span class="important-dates-item-text course-length">${_('{number} weeks').format(number=15)}</span></li>
+          % if get_course_about_section(request, course, "effort"):
+            <li class="important-dates-item">
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-pencil" aria-hidden="true"></span>
+                <p class="important-dates-item-title">${_("Estimated Effort")}</p>
+              </div>
+              <span class="important-dates-item-text effort">${get_course_about_section(request, course, "effort")}</span>
+            </li>
+          % endif
 
           %if course_price and (is_cosmetic_price_enabled):
             <li class="important-dates-item">
-              <span class="icon fa fa-money" aria-hidden="true"></span>
-              <p class="important-dates-item-title">${_("Price")}</p>
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-money" aria-hidden="true"></span>
+                <p class="important-dates-item-title">${_("Price")}</p>
+              </div>
               <span class="important-dates-item-text">${course_price}</span>
             </li>
           %endif
 
           % if pre_requisite_courses:
-          <% prc_target = reverse('about_course', args=[str(pre_requisite_courses[0]['key'])]) %>
-          <li class="prerequisite-course important-dates-item">
-            <span class="icon fa fa-list-ul" aria-hidden="true"></span>
-            <p class="important-dates-item-title">${_("Prerequisites")}</p>
-            ## Multiple pre-requisite courses are not supported on frontend that's why we are pulling first element
-            <span class="important-dates-item-text pre-requisite"><a href="${prc_target}">${pre_requisite_courses[0]['display']}</a></span>
-            <p class="tip">
-            ${Text(_("You must successfully complete {link_start}{prc_display}{link_end} before you begin this course.")).format(
-              link_start=HTML('<a href="{}">').format(prc_target),
-              link_end=HTML('</a>'),
-              prc_display=pre_requisite_courses[0]['display'],
-            )}
-            </p>
-          </li>
+            <% prc_target = reverse('about_course', args=[str(pre_requisite_courses[0]['key'])]) %>
+            <li class="prerequisite-course important-dates-item">
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-list-ul" aria-hidden="true"></span>
+                <p class="important-dates-item-title">${_("Prerequisites")}</p>
+              </div>
+              <span class="important-dates-item-text pre-requisite">
+                <a href="${prc_target}">${pre_requisite_courses[0]['display']}</a>
+              </span>
+              <p class="tip">
+                ${Text(_("You must successfully complete {link_start}{prc_display}{link_end} before you begin this course.")).format(
+                  link_start=HTML('<a href="{}">').format(prc_target),
+                  link_end=HTML('</a>'),
+                  prc_display=pre_requisite_courses[0]['display'],
+                )}
+              </p>
+            </li>
           % endif
 
           % if get_course_about_section(request, course, "prerequisites"):
-            <li class="important-dates-item"><span class="icon fa fa-book" aria-hidden="true"></span><p class="important-dates-item-title">${_("Requirements")}</p><span class="important-dates-item-text prerequisites">${get_course_about_section(request, course, "prerequisites")}</span></li>
+            <li class="important-dates-item">
+              <div class="important-dates-item-left">
+                <span class="icon fa fa-book" aria-hidden="true"></span>
+                <p class="important-dates-item-title">${_("Requirements")}</p>
+              </div>
+              <span class="important-dates-item-text prerequisites">${get_course_about_section(request, course, "prerequisites")}</span>
+            </li>
           % endif
         </ol>
         </%block>
-        <%include file="course_about_sidebar_header.html" />
-    </div>
 
-      ## For now, ocw links are the only thing that goes in additional resources
-      % if get_course_about_section(request, course, "ocw_links"):
-      <div class="additional-resources">
-        <header>
-          <h1>${_("Additional Resources")}</h1>
+        <%include file="course_about_sidebar_header.html" />
       </div>
 
-        <div>
-          ## "MITOpenCourseware" should *not* be translated
-          <h2 class="opencourseware">MITOpenCourseware</h2>
-             ${get_course_about_section(request, course, "ocw_links")}
+      % if get_course_about_section(request, course, "ocw_links"):
+        <div class="additional-resources">
+          <header>
+            <h1>${_("Additional Resources")}</h1>
+          </header>
+
+          <div>
+            <h2 class="opencourseware">MITOpenCourseware</h2>
+            ${get_course_about_section(request, course, "ocw_links")}
+          </div>
         </div>
-    </div>
       %endif
 
-    % if sidebar_html_enabled:
-      % if get_course_about_section(request, course, "about_sidebar_html"):
-        <section class="about-sidebar-html">
-          ${get_course_about_section(request, course, "about_sidebar_html")}
-        </section>
-      % endif
-    %endif
+      % if sidebar_html_enabled:
+        % if get_course_about_section(request, course, "about_sidebar_html"):
+          <section class="about-sidebar-html">
+            ${get_course_about_section(request, course, "about_sidebar_html")}
+          </section>
+        % endif
+      %endif
+    </div>
   </div>
+</section>
 
-  </div>
-</div>
-
-## Need to put this hidden form on the page so that the registration button works.
-## Since it's no harm to display a hidden form, we display it with the most permissive conditional
-## which is when the student is not registered.
 %if active_reg_button or is_shib_course:
   <div style="display: none;">
     <form id="class_enroll_form" method="post" data-remote="true" action="${reverse('change_enrollment')}">
@@ -288,6 +880,30 @@ from openedx.core.lib.courses import course_image_url
 
 <%include file="../video_modal.html" />
 
+<footer class="kku-footer">
+  <div class="kku-footer__bottom">
+    <div class="kku-footer__inner">
+      <div class="kku-footer__brands">
+        <img src="${static.url('images/kku/vision-2030.svg')}" alt="Vision 2030" />
+        <img src="${static.url('images/kku/kku-logo-white.svg')}" alt="King Khalid University" />
+        <img src="${static.url('images/kku/kkux-logo.png')}" alt="KKUx" class="kku-footer__kkux-logo" />
+      </div>
+
+      <div class="kku-footer__legal">
+        <div class="kku-footer__legal-links">
+          <a href="#">تطبيق الجوال</a>
+          <a href="#">RSS</a>
+          <a href="https://maps.google.com/?q=King+Khalid+University+Abha" target="_blank" rel="noopener noreferrer">خريطة الموقع</a>
+        </div>
+
+        <p class="kku-footer__copyright">جميع الحقوق محفوظة © جامعة الملك خالد</p>
+        <p>تم التطوير بواسطة KKUx</p>
+        <p>آخر تحديث للموقع</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <%static:require_module_async module_name="js/dateutil_factory" class_name="DateUtilFactory">
-    DateUtilFactory.transform(iterationKey=".localized_datetime");
+  DateUtilFactory.transform(iterationKey=".localized_datetime");
 </%static:require_module_async>

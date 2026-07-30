@@ -55,7 +55,10 @@ header.global-header {
                 margin: 6px 0 0;
             }
             .logo {
-                height: 48px;
+                height: 40px;
+                width: auto;
+                max-width: 140px;
+                object-fit: contain;
                 margin: 0;
 
                 body.indigo-dark-theme & {

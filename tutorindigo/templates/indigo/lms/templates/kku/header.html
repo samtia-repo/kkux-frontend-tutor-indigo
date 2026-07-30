@@ -1,0 +1,218 @@
+## mako
+## KKU site header
+<%page expression_filter="h"/>
+<%!
+from django.urls import reverse
+from django.utils.translation import get_language, gettext as _
+%>
+<%namespace name='static' file='/static_content.html'/>
+
+<%
+  lang = (get_language() or 'en').lower()
+  is_arabic = lang.startswith('ar')
+  direction = 'rtl' if is_arabic else 'ltr'
+  logo = capture(static.url, 'images/kku/logo-ar.svg' if is_arabic else 'images/kku/logo-en.svg')
+  arrow = capture(static.url, 'images/kku/header-icons/arrow.svg')
+  avatar = capture(static.url, 'images/kku/header-icons/avatar.svg')
+
+  labels = {
+    'home': 'الرئيسية' if is_arabic else 'Home',
+    'programs': 'البرامج' if is_arabic else 'Programs',
+    'all_courses': 'جميع الدورات' if is_arabic else 'All Courses',
+    'all_programs': 'جميع البرامج' if is_arabic else 'All Programs',
+    'story': 'قصة KKUx' if is_arabic else 'KKUx Story',
+    'contact': 'تواصل معنا' if is_arabic else 'Contact Us',
+    'business': 'KKUx للأعمال' if is_arabic else 'KKUx Business',
+    'open_menu': 'فتح القائمة' if is_arabic else 'Open menu',
+    'close_menu': 'إغلاق القائمة' if is_arabic else 'Close menu',
+    'learner_role': 'متدرب' if is_arabic else 'Learner',
+    'dashboard': 'لوحة التعلم' if is_arabic else 'Dashboard',
+    'profile': 'الملف الشخصي' if is_arabic else 'Profile',
+    'sign_out': 'تسجيل الخروج' if is_arabic else 'Sign Out',
+    'nav_label': 'التنقل الرئيسي' if is_arabic else 'Main navigation',
+  }
+
+  links = {
+    'home': static.get_value('KKU_HOME_URL', 'http://localhost:5173'),
+    'courses': static.get_value('KKU_COURSES_URL', '/courses'),
+    'programs': static.get_value('KKU_PROGRAMS_URL', '/dashboard/programs/'),
+    'about': static.get_value('KKU_STORY_URL', static.get_value('KKU_ABOUT_URL', 'http://localhost:5173/about')),
+    'contact': static.get_value('KKU_CONTACT_URL', 'http://localhost:5173/contact'),
+    'business': static.get_value('KKU_BUSINESS_URL', 'http://localhost:5173/business'),
+    'dashboard': static.get_value('KKU_DASHBOARD_URL', static.get_value('KKU_LEARNER_DASHBOARD_URL', '/learner-dashboard')),
+    'profile': static.get_value('KKU_PROFILE_URL', '/profile/u/{username}/'.format(username=user.username) if user.is_authenticated else '/'),
+    'logout': static.get_value('KKU_LOGOUT_URL', reverse('logout')),
+  }
+
+  display_name = ''
+  if user.is_authenticated:
+    display_name = getattr(getattr(user, 'profile', None), 'name', None) or user.username
+%>
+
+<header class="site-header kku-lms-homepage-header" dir="${direction}" data-kku-header>
+  <div class="site-header__main">
+    <div class="site-header__main-inner">
+      <button
+        type="button"
+        class="site-header__burger"
+        data-kku-burger
+        aria-label="${labels['open_menu']}"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="site-header__right">
+        <a href="${links['home']}" class="site-header__brand">
+          <img
+            src="${logo}"
+            alt="KKUx"
+            class="site-header__logo-image${'' if is_arabic else ' site-header__logo-image--en'}"
+          />
+        </a>
+
+        <nav class="site-header__nav" aria-label="${labels['nav_label']}">
+          <a href="${links['home']}" class="site-header__nav-link">${labels['home']}</a>
+
+          <div class="site-header__dropdown" data-kku-programs>
+            <button
+              type="button"
+              class="site-header__nav-link site-header__dropdown-trigger"
+              data-kku-programs-trigger
+              aria-expanded="false"
+            >
+              <span class="site-header__dropdown-label">${labels['programs']}</span>
+              <img src="${arrow}" alt="" class="site-header__arrow site-header__arrow--nav" />
+            </button>
+            <div class="site-header__dropdown-menu">
+              <a href="${links['courses']}" class="site-header__dropdown-item">${labels['all_courses']}</a>
+              <a href="${links['programs']}" class="site-header__dropdown-item">${labels['all_programs']}</a>
+            </div>
+          </div>
+
+          <a href="${links['about']}" class="site-header__nav-link">${labels['story']}</a>
+          <a href="${links['contact']}" class="site-header__nav-link">${labels['contact']}</a>
+          <span class="site-header__nav-link site-header__nav-link--disabled" aria-disabled="true">${labels['business']}</span>
+        </nav>
+      </div>
+
+      <div class="site-header__left">
+        % if user.is_authenticated:
+        <div class="kku-lms-user-menu-only kku-lms-user-menu-card" data-kku-user-menu>
+          <button
+            type="button"
+            class="kku-lms-user-trigger"
+            data-kku-user-trigger
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <img src="${avatar}" alt="" class="kku-lms-user-avatar" />
+            <div class="kku-lms-user-text">
+              <span class="kku-lms-user-name">${display_name}</span>
+              <span class="kku-lms-user-role">${labels['learner_role']}</span>
+            </div>
+            <img src="${arrow}" alt="" class="kku-lms-user-card-arrow" />
+          </button>
+          <div class="kku-lms-user-dropdown" role="menu" hidden data-kku-user-dropdown>
+            <a href="${links['dashboard']}" class="kku-lms-user-dropdown-item" role="menuitem">${labels['dashboard']}</a>
+            <a href="${links['profile']}" class="kku-lms-user-dropdown-item" role="menuitem">${labels['profile']}</a>
+            <a href="${links['logout']}" class="kku-lms-user-dropdown-item" role="menuitem">${labels['sign_out']}</a>
+          </div>
+        </div>
+        % endif
+      </div>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="site-header__mobile-overlay"
+    data-kku-mobile-overlay
+    aria-label="${labels['close_menu']}"
+  ></button>
+
+  <aside class="site-header__mobile-menu" dir="${direction}" data-kku-mobile-menu>
+    <div class="site-header__mobile-menu-head">
+      <img
+        src="${logo}"
+        alt="KKUx"
+        class="site-header__mobile-logo${'' if is_arabic else ' site-header__mobile-logo--en'}"
+      />
+      <button type="button" class="site-header__mobile-close" data-kku-mobile-close aria-label="${labels['close_menu']}">×</button>
+    </div>
+    <nav class="site-header__mobile-nav" aria-label="${labels['nav_label']}">
+      <a href="${links['home']}">${labels['home']}</a>
+      <a href="${links['courses']}">${labels['all_courses']}</a>
+      <a href="${links['programs']}">${labels['all_programs']}</a>
+      <a href="${links['about']}">${labels['story']}</a>
+      <a href="${links['contact']}">${labels['contact']}</a>
+      <span class="site-header__nav-item--disabled" aria-disabled="true">${labels['business']}</span>
+    </nav>
+  </aside>
+</header>
+
+<script>
+(function () {
+  var header = document.querySelector('[data-kku-header]');
+  if (!header) return;
+
+  var burger = header.querySelector('[data-kku-burger]');
+  var overlay = header.querySelector('[data-kku-mobile-overlay]');
+  var mobileMenu = header.querySelector('[data-kku-mobile-menu]');
+  var mobileClose = header.querySelector('[data-kku-mobile-close]');
+  var programs = header.querySelector('[data-kku-programs]');
+  var programsTrigger = header.querySelector('[data-kku-programs-trigger]');
+  var userMenu = header.querySelector('[data-kku-user-menu]');
+  var userTrigger = header.querySelector('[data-kku-user-trigger]');
+  var userDropdown = header.querySelector('[data-kku-user-dropdown]');
+
+  function setMobileOpen(open) {
+    if (!burger || !overlay || !mobileMenu) return;
+    burger.classList.toggle('site-header__burger--open', open);
+    overlay.classList.toggle('site-header__mobile-overlay--open', open);
+    mobileMenu.classList.toggle('site-header__mobile-menu--open', open);
+    document.body.classList.toggle('mobile-menu-open', open);
+  }
+
+  function setProgramsOpen(open) {
+    if (!programs || !programsTrigger) return;
+    programs.classList.toggle('site-header__dropdown--open', open);
+    programsTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function setUserOpen(open) {
+    if (!userMenu || !userTrigger || !userDropdown) return;
+    userMenu.classList.toggle('kku-lms-user-menu-card--open', open);
+    userTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      userDropdown.removeAttribute('hidden');
+    } else {
+      userDropdown.setAttribute('hidden', 'hidden');
+    }
+  }
+
+  if (burger) burger.addEventListener('click', function () {
+    setMobileOpen(!mobileMenu.classList.contains('site-header__mobile-menu--open'));
+  });
+  if (overlay) overlay.addEventListener('click', function () { setMobileOpen(false); });
+  if (mobileClose) mobileClose.addEventListener('click', function () { setMobileOpen(false); });
+  if (programsTrigger) programsTrigger.addEventListener('click', function (e) {
+    e.preventDefault();
+    setProgramsOpen(!programs.classList.contains('site-header__dropdown--open'));
+  });
+  if (userTrigger) userTrigger.addEventListener('click', function (e) {
+    e.preventDefault();
+    setUserOpen(!userMenu.classList.contains('kku-lms-user-menu-card--open'));
+  });
+
+  document.addEventListener('mousedown', function (event) {
+    if (programs && !event.target.closest('[data-kku-programs]')) setProgramsOpen(false);
+    if (userMenu && !event.target.closest('[data-kku-user-menu]')) setUserOpen(false);
+  });
+
+  header.querySelectorAll('.site-header__mobile-nav a').forEach(function (link) {
+    link.addEventListener('click', function () { setMobileOpen(false); });
+  });
+})();
+</script>

@@ -1,0 +1,50 @@
+## mako
+## KKU site footer
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import get_language
+%>
+<%namespace name='static' file='/static_content.html'/>
+
+<%
+  lang = (get_language() or 'en').lower()
+  is_arabic = lang.startswith('ar')
+  direction = 'rtl' if is_arabic else 'ltr'
+  kkux_logo = capture(static.url, 'images/kku/logo-ar.svg' if is_arabic else 'images/kku/logo-en.svg')
+
+  labels = {
+    'mobile_app': 'تطبيق الجوال' if is_arabic else 'Mobile App',
+    'rss': 'RSS',
+    'site_map': 'خريطة الموقع' if is_arabic else 'Site Map',
+    'copyright': 'جميع الحقوق محفوظة © جامعة الملك خالد' if is_arabic else 'All rights reserved © King Khalid University',
+    'developed_by': 'تم التطوير بواسطة KKUx' if is_arabic else 'Developed by KKUx',
+    'last_updated': 'آخر تحديث للموقع' if is_arabic else 'Last updated',
+  }
+%>
+
+<footer class="site-footer" dir="${direction}">
+  <div class="site-footer__bottom">
+    <div class="site-footer__bottom-inner">
+      <div class="site-footer__brands">
+        <img src="${static.url('images/kku/vision-2030.svg')}" alt="Vision 2030" />
+        <img src="${static.url('images/kku/kku-logo-white.svg')}" alt="King Khalid University" />
+        <img
+          src="${kkux_logo}"
+          alt="KKUx"
+          class="site-footer__kkux-logo${'' if is_arabic else ' site-footer__kkux-logo--en'}"
+        />
+      </div>
+
+      <div class="site-footer__legal">
+        <div class="site-footer__legal-links">
+          <a href="#">${labels['mobile_app']}</a>
+          <a href="#">${labels['rss']}</a>
+          <a href="https://maps.google.com/?q=King+Khalid+University+Abha" target="_blank" rel="noopener noreferrer">${labels['site_map']}</a>
+        </div>
+        <p class="site-footer__copyright">${labels['copyright']}</p>
+        <p>${labels['developed_by']}</p>
+        <p>${labels['last_updated']}</p>
+      </div>
+    </div>
+  </div>
+</footer>

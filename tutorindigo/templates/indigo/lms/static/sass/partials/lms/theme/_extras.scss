@@ -1721,3 +1721,110 @@ body.indigo-dark-theme {
 @import '../../../views/teams';
 @import '../../../views/wiki';
 @import '../../../courseware/responsive-nav';
+@import '../../../courseware/instructor-dashboard';
+
+
+/* KKU global theme */
+$kku-green: #065f46;
+$kku-green-dark: #064e3b;
+$kku-green-mid: #047857;
+$kku-green-light: #ecfdf5;
+$kku-border: #d0d5dd;
+$kku-text: #111827;
+
+/* Font */
+html,
+body,
+button,
+input,
+select,
+textarea,
+table,
+th,
+td,
+.btn,
+.button,
+label {
+  font-family: "IBM Plex Sans Arabic", "Tahoma", "Arial", sans-serif !important;
+}
+
+/* Links */
+a,
+.btn-link {
+  color: $kku-green !important;
+}
+
+a:hover,
+a:focus,
+.btn-link:hover,
+.btn-link:focus {
+  color: $kku-green-dark !important;
+}
+
+/* Buttons */
+button,
+.button,
+.btn,
+input[type="submit"],
+input[type="button"] {
+  border-radius: 8px;
+  text-shadow: none !important;
+}
+
+.btn-primary,
+.btn-blue,
+.action-primary,
+input[type="submit"],
+input[type="button"] {
+  background: $kku-green !important;
+  border-color: $kku-green !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-blue:hover,
+.btn-blue:focus,
+.action-primary:hover,
+.action-primary:focus,
+input[type="submit"]:hover,
+input[type="submit"]:focus,
+input[type="button"]:hover,
+input[type="button"]:focus {
+  background: $kku-green-dark !important;
+  border-color: $kku-green-dark !important;
+  color: #ffffff !important;
+}
+
+/* Focus */
+button:focus,
+.btn:focus,
+.button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.22) !important;
+}
+
+/* Alerts */
+.alert-info,
+.info,
+.message-confirmation,
+.msg-confirm,
+.msg-success {
+  background: $kku-green-light !important;
+  border-color: #a7f3d0 !important;
+  color: $kku-green-dark !important;
+}
+
+/* Tabs */
+.nav-tabs .active,
+.nav-tabs .active a,
+.nav-tabs .active button,
+.tabs .active,
+.tabs .active a,
+.tabs .active button {
+  border-color: $kku-green !important;
+  color: $kku-green-dark !important;
+}

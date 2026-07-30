@@ -10,16 +10,578 @@
 %>
 
 <%namespace name='static' file='../static_content.html'/>
+
 <%block name="js_extra">
   <script type="text/javascript" src="${static.url('common/js/vendor/bootstrap.bundle.js')}"></script>
 </%block>
+
 % if course_discovery_enabled:
 <%block name="header_extras">
+  <style>
+    /* Theme colors */
+    :root {
+      --kku-green-950: #022c22;
+      --kku-green-900: #064e3b;
+      --kku-green-800: #065f46;
+      --kku-green-700: #047857;
+      --kku-green-600: #059669;
+      --kku-green-500: #10b981;
+      --kku-green-100: #d1fae5;
+      --kku-green-50: #ecfdf5;
+      --kku-text: #0f172a;
+      --kku-muted: #64748b;
+      --kku-border: #d8e7df;
+    }
+
+    /* Page reset */
+    html,
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background:
+        radial-gradient(circle at top left, rgba(16,185,129,.13), transparent 34rem),
+        linear-gradient(135deg, #f1f7f4 0%, #ecfdf5 45%, #eef7f2 100%) !important;
+    }
+
+    /* Hide Open edX chrome */
+    #page-prompt,
+    .global-header,
+    header.global-header,
+    .marketing-hero,
+    .wrapper-header,
+    .wrapper-footer,
+    footer.wrapper-footer,
+    .nav-skip,
+    .jump-nav {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+      visibility: hidden !important;
+    }
+
+    /* Remove Open edX spacing */
+    .window-wrap,
+    .content-wrapper,
+    .content-wrapper.main-container,
+    #content.content-wrapper.main-container,
+    .wrapper-content,
+    #main {
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: none !important;
+      width: 100% !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* Header */
+    .kku-header {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      margin: 0 !important;
+      background:
+        radial-gradient(circle at 8% 20%, rgba(16,185,129,.18), transparent 18rem),
+        linear-gradient(135deg, #022c22 0%, #064e3b 52%, #022c22 100%);
+      box-shadow: 0 18px 45px rgba(2,44,34,.24);
+    }
+
+    .kku-header__logo {
+      height: 62px;
+      width: auto;
+      max-width: 230px;
+      object-fit: contain;
+      margin-right: 2rem;
+    }
+
+    .kku-header__nav {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      flex: 1;
+    }
+
+    .kku-header__nav a {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.15rem;
+      color: rgba(255,255,255,.9) !important;
+      font-weight: 800;
+      text-decoration: none !important;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .kku-header__nav a:hover,
+    .kku-header__nav a.is-active {
+      color: #fff !important;
+      background: rgba(16,185,129,.16);
+      border-bottom-color: #10b981;
+    }
+
+    /* Main container */
+    .find-courses,
+    .courses-container {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+
+    .courses-container {
+      width: min(1320px, calc(100% - 48px)) !important;
+      max-width: none !important;
+      margin: 0 auto 72px !important;
+    }
+
+    /* Hero */
+    .course-heading-area {
+      margin: 42px auto 24px !important;
+      padding: 46px !important;
+      border-radius: 28px !important;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(16,185,129,.22), transparent 22rem),
+        linear-gradient(135deg, #022c22 0%, #064e3b 52%, #047857 100%) !important;
+      color: #fff !important;
+      box-shadow: 0 28px 70px rgba(2,44,34,.22) !important;
+      text-align: center;
+    }
+
+    .course-heading-area h2 {
+      margin: 0 0 14px !important;
+      color: #fff !important;
+      font-size: clamp(32px, 4vw, 54px) !important;
+      font-weight: 900 !important;
+      line-height: 1.05 !important;
+      letter-spacing: -0.04em !important;
+    }
+
+    .course-heading-area p {
+      margin: 0 auto !important;
+      max-width: 760px !important;
+      color: rgba(255,255,255,.84) !important;
+      font-size: 18px !important;
+      line-height: 1.7 !important;
+    }
+
+    /* Search */
+    .saerch-bar-discover {
+      display: flex !important;
+      align-items: stretch !important;
+      gap: 14px !important;
+      padding: 18px !important;
+      border-radius: 22px !important;
+      background: rgba(255,255,255,.9) !important;
+      border: 1px solid var(--kku-border) !important;
+      box-shadow: 0 18px 45px rgba(2,44,34,.08) !important;
+      margin-bottom: 28px !important;
+    }
+
+    .discover-search {
+      flex: 1;
+    }
+
+    .filter-block > a,
+    .input-holder,
+    .discovery-submit {
+      height: 56px !important;
+    }
+
+    .filter-block > a {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      padding: 0 18px !important;
+      border-radius: 16px !important;
+      background: #fff !important;
+      border: 1px solid var(--kku-border) !important;
+      color: var(--kku-green-950) !important;
+      text-decoration: none !important;
+      font-weight: 900 !important;
+    }
+
+    .wrapper-search-input {
+      display: flex !important;
+      align-items: stretch !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .input-holder {
+      flex: 1 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      padding: 0 18px !important;
+      background: #fff !important;
+      border: 1px solid var(--kku-border) !important;
+      border-right: 0 !important;
+      border-radius: 16px 0 0 16px !important;
+    }
+
+    .discovery-input {
+      width: 100% !important;
+      height: 54px !important;
+      border: 0 !important;
+      background: transparent !important;
+      color: var(--kku-text) !important;
+      font-size: 16px !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .discovery-submit {
+      min-width: 132px !important;
+      border: 1px solid var(--kku-green-700) !important;
+      border-radius: 0 16px 16px 0 !important;
+      background: linear-gradient(135deg, var(--kku-green-700), var(--kku-green-950)) !important;
+      color: #fff !important;
+      font-weight: 900 !important;
+      padding: 0 26px !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
+    /* Course grid */
+    .course-holder,
+    .courses {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      overflow: visible !important;
+    }
+
+    .courses-listing,
+    .courses-listing.courses-list,
+    #main .courses-container .courses .courses-listing.courses-list {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 32px !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      list-style: none !important;
+      background: transparent !important;
+      overflow: visible !important;
+    }
+
+    .courses-listing-item,
+    #main .courses-container .courses .courses-listing.courses-list > .courses-listing-item {
+      display: block !important;
+      float: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      list-style: none !important;
+      background: transparent !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Course card */
+    .courses-listing-item article.course,
+    .courses-listing-item .course,
+    .courses-listing .course,
+    article.course {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      min-height: 390px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-radius: 24px !important;
+      border: 1px solid var(--kku-border) !important;
+      background: #fff !important;
+      overflow: hidden !important;
+      box-shadow: 0 18px 45px rgba(2,44,34,.08) !important;
+      box-sizing: border-box !important;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+    }
+
+    .courses-listing-item article.course:hover,
+    .courses-listing .course:hover {
+      transform: translateY(-4px);
+      border-color: rgba(4,120,87,.35) !important;
+      box-shadow: 0 24px 60px rgba(2,44,34,.14) !important;
+    }
+
+    .courses-listing-item .course-image,
+    .courses-listing-item .cover-image {
+      display: block !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 100% !important;
+      height: 190px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: linear-gradient(135deg, var(--kku-green-100), var(--kku-green-50)) !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+
+    .courses-listing-item .cover-image img {
+      display: block !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    .courses-listing-item .course-info {
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 1 auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      padding: 22px !important;
+      background: #fff !important;
+      box-sizing: border-box !important;
+    }
+
+    .courses-listing-item .course-name {
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 0 14px !important;
+      padding: 0 !important;
+    }
+
+    .courses-listing-item .course-code {
+      display: inline-flex !important;
+      width: fit-content !important;
+      margin: 0 0 12px !important;
+      padding: 6px 10px !important;
+      border-radius: 999px !important;
+      background: var(--kku-green-50) !important;
+      color: var(--kku-green-700) !important;
+      font-size: 12px !important;
+      font-weight: 900 !important;
+    }
+
+    .courses-listing-item .course-title {
+      display: block !important;
+      width: 100% !important;
+      color: var(--kku-green-950) !important;
+      font-size: 20px !important;
+      font-weight: 900 !important;
+      line-height: 1.35 !important;
+      word-break: normal !important;
+    }
+
+    .courses-listing-item .course-organization {
+      display: block !important;
+      margin-top: 8px !important;
+      color: var(--kku-muted) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+
+    .courses-listing-item .learn-more {
+      width: 100% !important;
+      min-height: 44px !important;
+      margin: 18px 0 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 14px !important;
+      background: linear-gradient(135deg, var(--kku-green-700), var(--kku-green-950)) !important;
+      color: #fff !important;
+      font-weight: 900 !important;
+      text-decoration: none !important;
+      box-sizing: border-box !important;
+    }
+
+    .courses-listing-item .course-date {
+      width: 100% !important;
+      margin-top: 16px !important;
+      padding-top: 14px !important;
+      border-top: 1px solid #eef2f7 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      color: var(--kku-muted) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+
+    /* Footer */
+    .kku-footer {
+      direction: rtl;
+      background: #f3f4f6;
+      color: #344054;
+      border-top: 1px solid #d0d5dd;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .kku-footer__bottom {
+      min-height: 168px;
+      padding: 40px 0;
+    }
+
+    .kku-footer__inner {
+      width: min(1800px, calc(100% - 48px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 48px;
+      direction: ltr;
+    }
+
+    .kku-footer__brands {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .kku-footer__brands img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .kku-footer__kkux-logo {
+      height: 42px !important;
+    }
+
+    .kku-footer__legal {
+      flex: 0 1 620px;
+      margin-left: auto;
+      text-align: right;
+      direction: rtl;
+    }
+
+    .kku-footer__legal-links {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .kku-footer__legal a {
+      color: inherit !important;
+      text-decoration: none !important;
+    }
+
+    .kku-footer__legal p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #344054;
+    }
+
+    .kku-footer__copyright {
+      font-weight: 700;
+      color: #111827 !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .courses-listing,
+      .courses-listing.courses-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+
+      .saerch-bar-discover {
+        flex-direction: column !important;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .kku-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 1rem 0;
+      }
+
+      .kku-header__logo {
+        margin: 0 0 8px;
+      }
+
+      .kku-header__nav {
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      .kku-header__nav a {
+        min-height: 52px;
+      }
+
+      .courses-container,
+      .kku-footer__inner {
+        width: min(100% - 28px, 1320px) !important;
+      }
+
+      .course-heading-area {
+        margin-top: 24px !important;
+        padding: 28px !important;
+      }
+
+      .wrapper-search-input {
+        flex-direction: column !important;
+      }
+
+      .input-holder {
+        border-radius: 16px !important;
+        border-right: 1px solid var(--kku-border) !important;
+      }
+
+      .discovery-submit {
+        width: 100% !important;
+        border-radius: 16px !important;
+        margin-top: 12px !important;
+      }
+
+      .courses-listing,
+      .courses-listing.courses-list {
+        grid-template-columns: 1fr !important;
+      }
+
+      .kku-footer__inner {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+      }
+
+      .kku-footer__legal {
+        margin-left: 0;
+        text-align: right;
+      }
+
+      .kku-footer__brands {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+
   % for template_name in ["course_card", "filter_bar", "filter", "facet", "facet_option"]:
   <script type="text/template" id="${template_name}-tpl">
       <%static:include path="discovery/${template_name}.underscore" />
   </script>
   % endfor
+
   <%static:require_module module_name="js/discovery/discovery_factory" class_name="DiscoveryFactory">
     DiscoveryFactory(
       ${course_discovery_meanings | n, dump_js_escaped_json},
@@ -35,67 +597,107 @@
 <%block name="pagetitle">${_("Courses")}</%block>
 
 <main id="main" aria-label="Content" tabindex="-1">
-    <section class="find-courses">
-      <section class="courses-container">
-        <!-- NEW IN INDIGO Heading was added. -->
-        <div class="course-heading-area">
-          <h2>Unlock Your Potential: Discover New Courses Today!</h2>
-          <p>Explore a world of knowledge and enhance your skills with our diverse range of courses</p>
-        </div>
-        <!-- NEW IN INDIGO Modified search bar and filters. -->
-        % if course_discovery_enabled:
-          <div class="saerch-bar-discover">
-            <div class="dropdown filter-block">
-              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <!-- Header -->
+  <header class="kku-header">
+    <img src="${static.url('images/kku/kkuwhitelogo.svg')}" alt="KKUx Academy" class="kku-header__logo" />
+
+    <nav class="kku-header__nav" aria-label="Main navigation">
+      <a href="${static.get_value('KKU_HOME_URL', 'http://localhost:5173')}">Home</a>
+<a href="${static.get_value('KKU_DASHBOARD_URL', 'http://apps.local.openedx.io/learner-dashboard/')}">Dashboard</a>
+<a href="${static.get_value('KKU_COURSES_URL', 'http://local.openedx.io:8000/courses')}" class="is-active">Courses</a>
+<a href="${static.get_value('KKU_PROGRAMS_URL', '/dashboard/programs/')}">Programs</a>
+<a href="${static.get_value('KKU_STORY_URL', 'http://localhost:5173/about')}">KKUx Story</a>
+<a href="${static.get_value('KKU_BUSINESS_URL', 'http://localhost:5173/business')}">KKUx Business</a>
+<a href="${static.get_value('KKU_CONTACT_URL', 'http://localhost:5173/contact')}">Contact</a>
+    </nav>
+  </header>
+
+  <section class="find-courses">
+    <section class="courses-container">
+      <!-- Hero -->
+      <div class="course-heading-area">
+        <h2>Unlock Your Potential</h2>
+        <p>Discover courses designed to help learners build practical skills, grow professionally, and continue learning with KKUx.</p>
+      </div>
+
+      <!-- Search and filters -->
+      % if course_discovery_enabled:
+        <div class="saerch-bar-discover">
+          <div class="dropdown filter-block">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M2 3C2 2.44772 2.44772 2 3 2H13C13.5523 2 14 2.44772 14 3V4.25245C14 4.51767 13.8946 4.77202 13.7071 4.95956L9.62623 9.04044C9.43869 9.22798 9.33333 9.48233 9.33333 9.74755V11.3333L6.66667 14V9.74755C6.66667 9.48233 6.56131 9.22798 6.37377 9.04044L2.29289 4.95956C2.10536 4.77202 2 4.51767 2 4.25245V3Z" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Filters</span>
-                <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z" fill="#9CA3AF"/>
-                  </svg>
-              </a>
-              <div class="dropdown-menu search-facets-lists" aria-labelledby="dropdownMenuLink">
-                  <aside aria-label="${_('Refine Your Search')}" class="search-facets phone-menu">
-                    <h2 class="header-search-facets">${_('Refine Your Search')}</h2>
-                    <section class="search-facets-lists">
-                    </section>
-                  </aside>
-              </div>
+              </svg>
+              <span>Filters</span>
+            </a>
+
+            <div class="dropdown-menu search-facets-lists" aria-labelledby="dropdownMenuLink">
+              <aside aria-label="${_('Refine Your Search')}" class="search-facets phone-menu">
+                <h2 class="header-search-facets">${_('Refine Your Search')}</h2>
+                <section class="search-facets-lists"></section>
+              </aside>
             </div>
-            <div class="discover-search">
+          </div>
+
+          <div class="discover-search">
             <div id="discovery-form" role="search" aria-label="course" class="wrapper-search-context">
               <form class="wrapper-search-input">
                 <label for="discovery-input" class="sr">${_('Search for a course')}</label>
+
                 <div class="input-holder">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4ZM2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 9.29583 13.5892 10.4957 12.8907 11.4765L17.7071 16.2929C18.0976 16.6834 18.0976 17.3166 17.7071 17.7071C17.3166 18.0976 16.6834 18.0976 16.2929 17.7071L11.4765 12.8907C10.4957 13.5892 9.29583 14 8 14C4.68629 14 2 11.3137 2 8Z" fill="#9CA3AF"/>
-                    </svg>
                   <input id="discovery-input" class="discovery-input" placeholder="${_('Explore course')}" type="text"/>
                 </div>
+
                 <div class="button-holder">
                   <button type="submit" class="button postfix discovery-submit" title="${_('Search')}">
                     Search
                   </button>
                 </div>
               </form>
+
               <div id="discovery-message" class="search-status-label"></div>
             </div>
-            <div id="filter-bar" class="filters hide-phone is-collapsed">>
-            </div>
+
+            <div id="filter-bar" class="filters hide-phone is-collapsed"></div>
           </div>
         </div>
       % endif
 
-        <div class="course-holder courses${'' if course_discovery_enabled else ' no-course-discovery'}" role="region" aria-label="${_('List of Courses')}">
-          <ul class="courses-listing courses-list">
-            %for course in courses:
-            <li class="courses-listing-item">
-              <%include file="../course.html" args="course=course" />
-            </li>
-            %endfor
-          </ul>
-        </div>
-      </section>
+      <!-- Course cards -->
+      <div class="course-holder courses${'' if course_discovery_enabled else ' no-course-discovery'}" role="region" aria-label="${_('List of Courses')}">
+        <ul class="courses-listing courses-list">
+          %for course in courses:
+          <li class="courses-listing-item">
+            <%include file="../course.html" args="course=course" />
+          </li>
+          %endfor
+        </ul>
+      </div>
     </section>
+  </section>
+
+  <!-- Footer -->
+  <footer class="kku-footer">
+    <div class="kku-footer__bottom">
+      <div class="kku-footer__inner">
+        <div class="kku-footer__brands">
+          <img src="${static.url('images/kku/vision-2030.svg')}" alt="Vision 2030" />
+          <img src="${static.url('images/kku/kku-logo-white.svg')}" alt="King Khalid University" />
+          <img src="${static.url('images/kku/kkux-logo.png')}" alt="KKUx" class="kku-footer__kkux-logo" />
+        </div>
+
+        <div class="kku-footer__legal">
+          <div class="kku-footer__legal-links">
+            <a href="#">تطبيق الجوال</a>
+            <a href="#">RSS</a>
+            <a href="https://maps.google.com/?q=King+Khalid+University+Abha" target="_blank" rel="noopener noreferrer">خريطة الموقع</a>
+          </div>
+
+          <p class="kku-footer__copyright">جميع الحقوق محفوظة © جامعة الملك خالد</p>
+          <p>تم التطوير بواسطة KKUx</p>
+          <p>آخر تحديث للموقع</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 </main>

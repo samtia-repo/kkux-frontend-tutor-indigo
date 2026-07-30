@@ -1,0 +1,227 @@
+<%! main_css = "css/bootstrap/lms-main.css" %>
+
+<%page expression_filter="h"/>
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%def name="online_help_token()"><% return "programs" %></%def>
+<%!
+from django.utils.translation import gettext as _
+from openedx.core.djangolib.markup import HTML
+%>
+
+<%block name="pagetitle">${_("Programs")}</%block>
+
+<%block name="headextra">
+<style>
+  :root {
+    --kku-green-950: #022c22;
+    --kku-green-900: #064e3b;
+    --kku-green-800: #065f46;
+    --kku-green-700: #047857;
+    --kku-green-500: #10b981;
+    --kku-green-100: #d1fae5;
+    --kku-green-50: #ecfdf5;
+    --kku-text: #0f172a;
+    --kku-muted: #64748b;
+    --kku-border: #d8e7df;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background:
+      radial-gradient(circle at top left, rgba(16,185,129,.13), transparent 34rem),
+      linear-gradient(135deg, #f1f7f4 0%, #ecfdf5 45%, #eef7f2 100%) !important;
+  }
+
+  #page-prompt,
+  .global-header,
+  header.global-header,
+  .marketing-hero,
+  .wrapper-header,
+  .wrapper-footer,
+  footer.wrapper-footer,
+  .nav-skip,
+  .jump-nav {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+  }
+
+  .window-wrap,
+  .content-wrapper,
+  .content-wrapper.main-container,
+  #content.content-wrapper.main-container,
+  .wrapper-content,
+  #main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .kku-header {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    background:
+      radial-gradient(circle at 8% 20%, rgba(16,185,129,.18), transparent 18rem),
+      linear-gradient(135deg, #022c22 0%, #064e3b 52%, #022c22 100%);
+    box-shadow: 0 18px 45px rgba(2,44,34,.24);
+  }
+
+  .kku-header__logo {
+    height: 62px;
+    width: auto;
+    max-width: 230px;
+    object-fit: contain;
+    margin-right: 2rem;
+  }
+
+  .kku-header__nav {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    flex: 1;
+  }
+
+  .kku-header__nav a {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.15rem;
+    color: rgba(255,255,255,.9) !important;
+    font-weight: 800;
+    text-decoration: none !important;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+
+  .kku-header__nav a:hover,
+  .kku-header__nav a.is-active {
+    color: #fff !important;
+    background: rgba(16,185,129,.16);
+    border-bottom-color: #10b981;
+  }
+
+  .kku-footer {
+    direction: rtl;
+    background: #f3f4f6;
+    color: #344054;
+    border-top: 1px solid #d0d5dd;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .kku-footer__bottom {
+    min-height: 168px;
+    padding: 40px 0;
+  }
+
+  .kku-footer__inner {
+    width: min(1800px, calc(100% - 48px));
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    direction: ltr;
+  }
+
+  .kku-footer__brands {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .kku-footer__brands img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .kku-footer__kkux-logo {
+    height: 42px !important;
+  }
+
+  .kku-footer__legal {
+    flex: 0 1 620px;
+    margin-left: auto;
+    text-align: right;
+    direction: rtl;
+  }
+
+  .kku-footer__legal-links {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .kku-footer__legal a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  .kku-footer__legal p {
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #344054;
+  }
+
+  .kku-footer__copyright {
+    font-weight: 700;
+    color: #111827 !important;
+  }
+</style>
+</%block>
+
+<header class="kku-header">
+  <img src="${static.url('images/kku/kkuwhitelogo.svg')}" alt="KKUx Academy" class="kku-header__logo" />
+
+  <nav class="kku-header__nav" aria-label="Main navigation">
+    <a href="http://localhost:5173">Home</a>
+    <a href="/learner-dashboard">Dashboard</a>
+    <a href="/dashboard/programs/" class="is-active">Programs</a>
+  </nav>
+</header>
+
+<main id="main" aria-label="Content" tabindex="-1">
+  ${HTML(programs_fragment.body_html())}
+</main>
+
+<footer class="kku-footer">
+  <div class="kku-footer__bottom">
+    <div class="kku-footer__inner">
+      <div class="kku-footer__brands">
+        <img src="${static.url('images/kku/vision-2030.svg')}" alt="Vision 2030" />
+        <img src="${static.url('images/kku/kku-logo-white.svg')}" alt="King Khalid University" />
+        <img src="${static.url('images/kku/kkux-logo.png')}" alt="KKUx" class="kku-footer__kkux-logo" />
+      </div>
+
+      <div class="kku-footer__legal">
+        <div class="kku-footer__legal-links">
+          <a href="#">تطبيق الجوال</a>
+          <a href="#">RSS</a>
+          <a href="https://maps.google.com/?q=King+Khalid+University+Abha" target="_blank" rel="noopener noreferrer">خريطة الموقع</a>
+        </div>
+
+        <p class="kku-footer__copyright">جميع الحقوق محفوظة © جامعة الملك خالد</p>
+        <p>تم التطوير بواسطة KKUx</p>
+        <p>آخر تحديث للموقع</p>
+      </div>
+    </div>
+  </div>
+</footer>

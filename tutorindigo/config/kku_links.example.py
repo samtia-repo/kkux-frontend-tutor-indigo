@@ -1,0 +1,7 @@
+KKU_HOME_URL = "http://localhost:5173"
+KKU_DASHBOARD_URL = "/learner-dashboard"
+KKU_COURSES_URL = "http://local.openedx.io:8000/courses"
+KKU_PROGRAMS_URL = "/dashboard/programs/"
+KKU_STORY_URL = "http://localhost:5173/about"
+KKU_BUSINESS_URL = "http://localhost:5173/business"
+KKU_CONTACT_URL = "http://localhost:5173/contact"

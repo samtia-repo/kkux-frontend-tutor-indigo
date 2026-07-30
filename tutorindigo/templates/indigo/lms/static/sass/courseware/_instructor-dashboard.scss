@@ -1,0 +1,683 @@
+/* KKU instructor dashboard */
+@import '../kku/fonts';
+@import '../kku/site-header';
+@import '../kku/site-footer';
+
+$kku-green: #065f46;
+$kku-green-dark: #064e3b;
+$kku-green-mid: #047857;
+$kku-green-light: #ecfdf5;
+$kku-green-border: #a7f3d0;
+$kku-font-stack: "IBM Plex Sans Arabic", "Tahoma", "Arial", sans-serif;
+
+/* Fonts */
+body.view-instructordash,
+body.view-instructordash *:not(.fa):not([class^="fa-"]):not([class*=" fa-"]):not(.icon):not([class^="icon-"]):not([class*=" icon-"]):not(.material-icons):not(.pgn__icon):not(pre):not(code):not(kbd):not(samp) {
+  font-family: $kku-font-stack !important;
+}
+
+body.view-instructordash {
+  pre,
+  pre *,
+  code,
+  kbd,
+  samp,
+  .CodeMirror,
+  .CodeMirror * {
+    font-family: Consolas, Monaco, "Courier New", monospace !important;
+  }
+
+  /* Course tabs */
+  .navbar.course-tabs,
+  .wrapper-course-material {
+    border-bottom-color: $kku-green-border !important;
+    padding-top: 8px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .navbar.course-tabs .nav-link,
+  .wrapper-course-material .course-tabs a {
+    color: $kku-green !important;
+  }
+
+  .navbar.course-tabs .nav-link:hover,
+  .navbar.course-tabs .nav-link:focus,
+  .navbar.course-tabs .nav-item.active .nav-link,
+  .wrapper-course-material .course-tabs a:hover,
+  .wrapper-course-material .course-tabs a:focus,
+  .wrapper-course-material .course-tabs .tab.active a {
+    color: $kku-green-dark !important;
+    border-bottom-color: $kku-green !important;
+  }
+
+  /* Header sizing */
+  .site-header {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .site-header__main {
+    height: 64px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .site-header__nav-link,
+  .site-header__dropdown-trigger,
+  .kku-lms-user-menu-only {
+    height: 64px !important;
+    min-height: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .site-header a,
+  .site-header button {
+    min-height: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .site-header__nav-link,
+  .site-header__dropdown-trigger {
+    padding: 0 18px !important;
+  }
+
+  .site-header__logo-image {
+    height: 44px !important;
+  }
+
+  .kku-lms-user-menu-card {
+    height: 44px !important;
+    min-height: 0 !important;
+    padding: 0 14px !important;
+  }
+
+  .kku-lms-user-trigger {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    line-height: 1.15 !important;
+  }
+
+  .kku-lms-user-avatar {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .kku-lms-user-card-arrow {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  #main,
+  .instructor-dashboard-wrapper-2 {
+    color: $kku-green-dark;
+  }
+
+  .instructor-dashboard-content-2 {
+    h2.instructor-dashboard-title {
+      color: $kku-green-dark !important;
+      margin-bottom: 24px !important;
+    }
+
+    .instructor-nav {
+      margin-top: 8px !important;
+      clear: both;
+    }
+
+    a.instructor-info-action,
+    .studio-edit-link a,
+    a[href*="studio"],
+    button,
+    .btn,
+    .button,
+    input[type="submit"],
+    input[type="button"],
+    .btn-primary,
+    .btn-blue,
+    .action-primary {
+      background: $kku-green !important;
+      border-color: $kku-green !important;
+      color: #ffffff !important;
+    }
+
+    a.instructor-info-action:hover,
+    a.instructor-info-action:focus,
+    .studio-edit-link a:hover,
+    .studio-edit-link a:focus,
+    a[href*="studio"]:hover,
+    a[href*="studio"]:focus,
+    button:hover,
+    button:focus,
+    .btn:hover,
+    .btn:focus,
+    .button:hover,
+    .button:focus,
+    input[type="submit"]:hover,
+    input[type="submit"]:focus,
+    input[type="button"]:hover,
+    input[type="button"]:focus,
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-blue:hover,
+    .btn-blue:focus,
+    .action-primary:hover,
+    .action-primary:focus {
+      background: $kku-green-dark !important;
+      border-color: $kku-green-dark !important;
+      color: #ffffff !important;
+    }
+
+    a:not(.instructor-info-action):not([href*="studio"]) {
+      color: $kku-green !important;
+    }
+
+    a:not(.instructor-info-action):not([href*="studio"]):hover,
+    a:not(.instructor-info-action):not([href*="studio"]):focus {
+      color: $kku-green-dark !important;
+    }
+
+    .instructor-nav {
+      border-color: $kku-green-border !important;
+
+      li button {
+        background: #ffffff !important;
+        border-color: transparent !important;
+        border-inline-start-color: $kku-green-border !important;
+        color: $kku-green !important;
+
+        &.active-section {
+          background: $kku-green !important;
+          border-color: $kku-green !important;
+          color: #ffffff !important;
+        }
+
+        &:hover,
+        &:focus {
+          background: $kku-green-light !important;
+          color: $kku-green-dark !important;
+          border-bottom-color: $kku-green-mid !important;
+        }
+
+        &.active-section:hover,
+        &.active-section:focus {
+          background: $kku-green-dark !important;
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    #course_info > h4,
+    #course_info .enrollment-wrapper,
+    .basic-wrapper,
+    .course-errors-wrapper,
+    .running-tasks-container {
+      background: $kku-green-light !important;
+      border-color: $kku-green-border !important;
+    }
+
+    #course_info > h4,
+    #course_info .enrollment-wrapper h4,
+    .basic-wrapper h4,
+    .course-errors-wrapper h4,
+    .running-tasks-container h4 {
+      color: $kku-green-dark !important;
+    }
+
+    .enrollment-wrapper {
+      .count {
+        color: $kku-green !important;
+      }
+
+      table {
+        th,
+        td {
+          color: $kku-green-dark !important;
+        }
+
+        .total {
+          border-top-color: $kku-green-border !important;
+
+          th,
+          td {
+            color: $kku-green !important;
+          }
+        }
+      }
+    }
+
+    .basic-wrapper,
+    .list-input {
+      .label,
+      label {
+        color: $kku-green-dark !important;
+      }
+
+      .data,
+      .value {
+        color: $kku-green-mid !important;
+      }
+    }
+
+    section.idash-section h3,
+    section.idash-section h4,
+    .request-response h3,
+    .request-res-section h3 {
+      color: $kku-green-dark !important;
+    }
+
+    .msg-confirm,
+    .msg-success,
+    .message-confirmation,
+    .request-response {
+      background: $kku-green-light !important;
+      border-color: $kku-green-border !important;
+      color: $kku-green-dark !important;
+    }
+
+    .idash-section {
+      border-color: $kku-green-border !important;
+
+      > h3,
+      .section-title,
+      .subsection-title,
+      legend {
+        color: $kku-green-dark !important;
+      }
+    }
+
+    .data-download-nav,
+    .cohort-management-nav,
+    .wrapper-tabs,
+    .tabs {
+      border-color: $kku-green-border !important;
+
+      button,
+      a,
+      .toggle-button {
+        background: #ffffff !important;
+        border-color: $kku-green-border !important;
+        color: $kku-green !important;
+      }
+
+      button:hover,
+      button:focus,
+      a:hover,
+      a:focus,
+      .toggle-button:hover,
+      .toggle-button:focus {
+        background: $kku-green-light !important;
+        color: $kku-green-dark !important;
+      }
+
+      .active-section,
+      .active,
+      .is-active,
+      .ui-state-active,
+      .tab.active .toggle-button {
+        background: $kku-green !important;
+        border-color: $kku-green !important;
+        color: #ffffff !important;
+      }
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="search"],
+    input[type="url"],
+    input[type="password"],
+    textarea,
+    select,
+    .field-input,
+    .input-text {
+      background: #ffffff !important;
+      border-color: $kku-green-border !important;
+      color: $kku-green-dark !important;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="search"]:focus,
+    input[type="url"]:focus,
+    input[type="password"]:focus,
+    textarea:focus,
+    select:focus,
+    .field-input:focus,
+    .input-text:focus {
+      border-color: $kku-green !important;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18) !important;
+      outline: none !important;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"],
+    progress {
+      accent-color: $kku-green;
+    }
+
+    label,
+    .label,
+    .form-label,
+    .field-label,
+    .tip,
+    .hint,
+    .help,
+    .description {
+      color: $kku-green-dark !important;
+    }
+
+    .action-type-container,
+    .membership-section,
+    .member-list-widget,
+    .auth-list-container,
+    .cohort-management-settings,
+    .cohort-management-edit,
+    .cohort-management-group-header,
+    .cohort-management-group-setup,
+    .cohort-management-group-add,
+    .discussions-wrapper,
+    .special-exam-header,
+    .data-download-grid-container .card,
+    .block-browser,
+    .metrics-overlay-content-wrapper {
+      border-color: $kku-green-border !important;
+    }
+
+    .member-list-widget .header,
+    .cohort-management-group-header,
+    .data-download-grid-container .card > h3,
+    .data-download-grid-container .card > h4,
+    .special-exam-header {
+      background: $kku-green-light !important;
+      border-color: $kku-green-border !important;
+      color: $kku-green-dark !important;
+    }
+
+    table,
+    .slickgrid,
+    .slick-header,
+    .slick-viewport,
+    .slick-row,
+    .slick-cell {
+      border-color: $kku-green-border !important;
+    }
+
+    table thead th,
+    .slick-header-column {
+      background: $kku-green !important;
+      border-color: $kku-green-dark !important;
+      color: #ffffff !important;
+    }
+
+    table tbody tr:nth-child(even),
+    .slick-row:nth-child(even) .slick-cell {
+      background: $kku-green-light !important;
+    }
+
+    table tbody tr:hover,
+    .slick-row:hover .slick-cell {
+      background: #d1fae5 !important;
+    }
+
+    table td,
+    table th,
+    .slick-cell {
+      color: $kku-green-dark !important;
+    }
+
+    .message,
+    .msg,
+    .wrapper-msg,
+    .copy-confirm,
+    .message-confirmation {
+      border-color: $kku-green-border !important;
+    }
+
+    .message-confirmation,
+    .msg-confirm,
+    .msg-success,
+    .copy-confirm,
+    .alert-info {
+      background: $kku-green-light !important;
+      border-top-color: $kku-green !important;
+      color: $kku-green-dark !important;
+    }
+
+    .modal,
+    .modal .inner-wrapper {
+      border-color: $kku-green-border !important;
+    }
+
+    .modal h2,
+    .modal h3,
+    .modal legend {
+      color: $kku-green-dark !important;
+    }
+
+    button:disabled,
+    button[aria-disabled="true"],
+    input:disabled,
+    input[aria-disabled="true"],
+    .is-disabled {
+      background: #6b9f8d !important;
+      border-color: #6b9f8d !important;
+      color: #ffffff !important;
+      opacity: 0.75;
+    }
+  }
+
+  /* Header/footer chrome */
+  .site-header button,
+  .site-header .btn,
+  .site-footer a {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+
+  .site-header .site-header__burger {
+    background: #111827 !important;
+  }
+
+  .site-header .site-header__burger span {
+    background: #ffffff !important;
+  }
+
+}
+
+/*!rtl:begin:ignore*/
+/* RTL */
+body.view-instructordash.rtl,
+body.view-instructordash.kku-is-rtl,
+body.view-instructordash[dir="rtl"] {
+  .kku-instructor-shell,
+  .navbar.course-tabs,
+  .wrapper-course-material,
+  .container,
+  .instructor-dashboard-wrapper-2,
+  .instructor-dashboard-content-2,
+  .idash-section,
+  .modal {
+    direction: rtl !important;
+  }
+
+  .instructor-dashboard-content-2 {
+    text-align: right !important;
+  }
+
+  .navbar.course-tabs .navbar-nav {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    direction: rtl !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+  }
+
+  .navbar.course-tabs .nav-item {
+    margin-right: 0 !important;
+    margin-left: 32px !important;
+  }
+
+  .wrapper-course-material .course-material,
+  .wrapper-course-material .tabs.course-tabs {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+
+  .wrapper-course-material .tabs.course-tabs > li {
+    float: right !important;
+    margin-right: 0 !important;
+    margin-left: 32px !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .hd,
+  .hd-1,
+  .hd-2,
+  .hd-3,
+  .hd-4,
+  .hd-5,
+  .instructor-dashboard-title,
+  .subsection-title,
+  .section-title,
+  .message-title,
+  p,
+  li,
+  label,
+  th,
+  td,
+  caption,
+  .tip,
+  .copy,
+  .field,
+  .list-input,
+  .basic-wrapper,
+  .enrollment-wrapper,
+  .reports-download-container,
+  .data-download-container,
+  .action-type-container,
+  .running-tasks-container,
+  .request-response-error {
+    text-align: right !important;
+  }
+
+  .instructor-dashboard-content-2 .list-input li {
+    flex-direction: row !important;
+  }
+
+  .instructor-dashboard-content-2 input[type="button"],
+  .instructor-dashboard-content-2 input[type="submit"],
+  .instructor-dashboard-content-2 button:not(.btn-link),
+  .instructor-dashboard-content-2 .btn,
+  .idash-section input[type="button"],
+  .idash-section input[type="submit"],
+  .idash-section button:not(.btn-link),
+  .idash-section .btn {
+    float: none !important;
+  }
+
+  .wrap-instructor-info {
+    float: left !important;
+    text-align: left !important;
+  }
+
+  .instructor-dashboard-title {
+    display: inline-block !important;
+    float: none !important;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+  }
+
+  #course_info > h4 {
+    padding: 15px 15px 0 0 !important;
+  }
+
+  table th,
+  table td {
+    text-align: right !important;
+  }
+}
+
+/* LTR */
+body.view-instructordash.ltr,
+body.view-instructordash.kku-is-ltr,
+body.view-instructordash[dir="ltr"] {
+  .kku-instructor-shell,
+  .navbar.course-tabs,
+  .wrapper-course-material,
+  .container,
+  .instructor-dashboard-wrapper-2,
+  .instructor-dashboard-content-2,
+  .idash-section,
+  .modal {
+    direction: ltr !important;
+  }
+
+  .instructor-dashboard-content-2 {
+    text-align: left !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .hd,
+  .hd-1,
+  .hd-2,
+  .hd-3,
+  .hd-4,
+  .hd-5,
+  .instructor-dashboard-title,
+  .subsection-title,
+  .section-title,
+  .message-title,
+  p,
+  li,
+  label,
+  th,
+  td,
+  caption,
+  .tip,
+  .copy,
+  .field,
+  .list-input,
+  .basic-wrapper,
+  .enrollment-wrapper,
+  .reports-download-container,
+  .data-download-container,
+  .action-type-container {
+    text-align: left !important;
+  }
+
+  .wrap-instructor-info {
+    float: right !important;
+    text-align: right !important;
+  }
+
+  .instructor-dashboard-title {
+    display: inline-block !important;
+    float: none !important;
+    margin-right: auto !important;
+    margin-left: 0 !important;
+  }
+
+  table th,
+  table td {
+    text-align: left !important;
+  }
+}
+/*!rtl:end:ignore*/

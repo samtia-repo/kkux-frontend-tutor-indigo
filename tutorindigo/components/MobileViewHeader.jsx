@@ -27,9 +27,9 @@ const MobileViewHeader = () => {
           }
         `}
       </style>
-      <a href={`${BASE_URL}/dashboard`} title="Open edX" className="logo">
-        <img className="logo-image" src={`${BASE_URL}/static/indigo/images/logo.png`} alt={intl.formatMessage(messages["mobile.view.header.logo.altText"])} />
-        <img className="logo-image logo-white" src={`${BASE_URL}/static/indigo/images/logo-white.png`} alt={intl.formatMessage(messages["mobile.view.header.logo.altText"])} />
+      <a href={`${BASE_URL}/dashboard`} title="KKUx" className="logo">
+        <img className="logo-image" src={`${BASE_URL}/static/indigo/images/kku/kkux-logo.png`} alt={intl.formatMessage(messages["mobile.view.header.logo.altText"])} />
+        <img className="logo-image logo-white" src={`${BASE_URL}/static/indigo/images/kku/kkux-logo.png`} alt={intl.formatMessage(messages["mobile.view.header.logo.altText"])} />
       </a>
     </>
   );
